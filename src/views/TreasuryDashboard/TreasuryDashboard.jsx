@@ -113,37 +113,9 @@ function TreasuryDashboard() {
                 </Typography>
               </Box>
 
-              <Box className="metric wsoprice">
-                <Typography variant="h6" color="textSecondary">
-                  wsOHM Price
-                  <InfoTooltip
-                    message={
-                      "wsOHM = sOHM * index\n\nThe price of wsOHM is equal to the price of OHM multiplied by the current index"
-                    }
-                  />
-                </Typography>
-
-                <Typography variant="h5">
-                  {wsOhmPrice ? formatCurrency(wsOhmPrice, 2) : <Skeleton type="text" />}
-                </Typography>
-              </Box>
-
-              <Box className="metric circ">
-                <Typography variant="h6" color="textSecondary">
-                  Circulating Supply (total)
-                </Typography>
-                <Typography variant="h5">
-                  {circSupply && totalSupply ? (
-                    parseInt(circSupply) + " / " + parseInt(totalSupply)
-                  ) : (
-                    <Skeleton type="text" />
-                  )}
-                </Typography>
-              </Box>
-
               <Box className="metric bpo">
                 <Typography variant="h6" color="textSecondary">
-                  Backing per OHM
+                  Backing per OHM?
                 </Typography>
                 <Typography variant="h5">
                   {backingPerOhm ? formatCurrency(backingPerOhm, 2) : <Skeleton type="text" />}

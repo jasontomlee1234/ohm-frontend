@@ -2,7 +2,7 @@ export const THE_GRAPH_URL = "https://api.thegraph.com/subgraphs/name/drondin/ol
 export const EPOCH_INTERVAL = 2200;
 
 // NOTE could get this from an outside source since it changes slightly over time
-export const BLOCK_RATE_SECONDS = 13.14;
+export const BLOCK_RATE_SECONDS = 1;
 
 export const TOKEN_DECIMALS = 9;
 
@@ -74,5 +74,6 @@ export const addresses: IAddresses = {
     BONDINGCALC_ADDRESS: "0x701CEdb77Bf55C74653b62BA544aC53048A8bA8d",
     CIRCULATING_SUPPLY_ADDRESS: "0x0efff9199aa1ac3c3e34e957567c1be8bf295034",
     TREASURY_ADDRESS: "0xb7d4386951340396Cef6f05F6b4E8D55C5378aA4",
+    DAILP_ADDRESS: "0xCb0ca708257364DFaA9201880AB5F32eCa1eF972",
   },
 };

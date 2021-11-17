@@ -63,20 +63,32 @@ export const loadAppDetails = createAsyncThunk(
       return;
     }
 
-    const marketCap = parseFloat(graphData.data.protocolMetrics[0].marketCap);
+    const ohmContract = new ethers.Contract(addresses[networkID].OHM_ADDRESS as string, sOHMv2, provider);
+    const daiContract = new ethers.Contract(addresses[networkID].DAI_ADDRESS as string, sOHMv2, provider);
+    const hackTotalSupply = (await ohmContract.totalSupply()) / 1000000000;
+    const daiInLP = await daiContract.balanceOf(addresses[networkID].DAILP_ADDRESS);
+    const ohmInLP = await ohmContract.balanceOf(addresses[networkID].DAILP_ADDRESS);
+
+    const price = daiInLP / 10 ** 18 / (ohmInLP / 10 ** 9);
+
+    console.log(daiInLP / 10 ** 18);
+    // const marketCap = parseFloat(graphData.data.protocolMetrics[0].marketCap);
+    const marketCap = price * hackTotalSupply;
+
     const circSupply = parseFloat(graphData.data.protocolMetrics[0].ohmCirculatingSupply);
-    const totalSupply = parseFloat(graphData.data.protocolMetrics[0].totalSupply);
+    // const totalSupply = parseFloat(graphData.data.protocolMetrics[0].totalSupply);
     const treasuryMarketValue = parseFloat(graphData.data.protocolMetrics[0].treasuryMarketValue);
+
     // const currentBlock = parseFloat(graphData.data._meta.block.number);
 
     if (!provider) {
       console.error("failed to connect to provider, please connect your wallet");
       return {
         stakingTVL,
-        marketPrice,
+        marketPrice: price,
         marketCap,
         circSupply,
-        totalSupply,
+        totalSupply: hackTotalSupply,
         treasuryMarketValue,
       };
     }
@@ -93,8 +105,6 @@ export const loadAppDetails = createAsyncThunk(
       provider,
     );
     const sohmMainContract = new ethers.Contract(addresses[networkID].SOHM_ADDRESS as string, sOHMv2, provider);
-    const sohmOldContract = new ethers.Contract(addresses[networkID].OLD_SOHM_ADDRESS as string, sOHM, provider);
-
     // Calculating staking
     const epoch = await stakingContract.epoch();
     const stakingReward = epoch.distribute;
@@ -105,6 +115,7 @@ export const loadAppDetails = createAsyncThunk(
     const fiveDayRate = Math.pow(1 + stakingRebase, 5 * 3) - 1;
     const stakingAPY = Math.pow(1 + stakingRebase, 365 * 3) - 1;
 
+    console.log(stakingAPY);
     // Current index
     const currentIndex = await stakingContract.index();
 
@@ -116,9 +127,9 @@ export const loadAppDetails = createAsyncThunk(
       stakingTVL,
       stakingRebase,
       marketCap,
-      marketPrice,
+      marketPrice: price,
       circSupply,
-      totalSupply,
+      totalSupply: hackTotalSupply,
       treasuryMarketValue,
     } as IAppData;
   },
@@ -172,6 +183,7 @@ const loadMarketPrice = createAsyncThunk("app/loadMarketPrice", async ({ network
   let marketPrice: number;
   try {
     marketPrice = await getMarketPrice({ networkID, provider });
+    console.log(marketPrice);
     marketPrice = marketPrice / Math.pow(10, 9);
   } catch (e) {
     marketPrice = await getTokenPrice("olympus");
