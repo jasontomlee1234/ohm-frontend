@@ -48,7 +48,8 @@ export const loadAppDetails = createAsyncThunk(
       return;
     }
 
-    const stakingTVL = parseFloat(graphData.data.protocolMetrics[0].totalValueLocked);
+    // const stakingTVL = parseFloat(graphData.data.protocolMetrics[0].totalValueLocked);
+    
     // NOTE (appleseed): marketPrice from Graph was delayed, so get CoinGecko price
     // const marketPrice = parseFloat(graphData.data.protocolMetrics[0].ohmPrice);
     let marketPrice;
@@ -71,6 +72,9 @@ export const loadAppDetails = createAsyncThunk(
 
     const price = daiInLP / 10 ** 18 / (ohmInLP / 10 ** 9);
 
+    const stakedOhm = await ohmContract.balanceOf(addresses[networkID].STAKING_ADDRESS)
+    const stakingTVL = (stakedOhm / 10 ** 9) * price
+    console.log("TVL", stakingTVL)
     console.log(daiInLP / 10 ** 18);
     // const marketCap = parseFloat(graphData.data.protocolMetrics[0].marketCap);
     const marketCap = price * hackTotalSupply;
